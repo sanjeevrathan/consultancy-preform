@@ -6,7 +6,7 @@ const Hero = () => {
   const [popular, setPopular] = useState([]);
 
   const fetchInfo = () => {
-    fetch("http://localhost:4000/allproducts")
+    fetch("http://localhost:8080/allproducts")
       .then((res) => res.json())
       .then((data) => setPopular(data));
   };

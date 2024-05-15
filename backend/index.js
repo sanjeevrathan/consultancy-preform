@@ -1,4 +1,3 @@
-const port = 4000;
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
@@ -25,22 +24,25 @@ mongoose
 // paste your mongoDB Connection string above with password
 // password should not contain '@' special character
 
-//Image Storage Engine 
+//Image Storage Engine
 const storage = multer.diskStorage({
-    destination: './upload/images',
-    filename: (req, file, cb) => {
-      console.log(file);
-        return cb(null, `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`)
-    }
-})
-const upload = multer({storage: storage})
-app.post("/upload", upload.single('product'), (req, res) => {
-    res.json({
-        success: 1,
-        image_url: `http://localhost:4000/images/${req.file.filename}`
-    })
-})
-app.use('/images', express.static('upload/images'));
+  destination: "./upload/images",
+  filename: (req, file, cb) => {
+    console.log(file);
+    return cb(
+      null,
+      `${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`
+    );
+  },
+});
+const upload = multer({ storage: storage });
+app.post("/upload", upload.single("product"), (req, res) => {
+  res.json({
+    success: 1,
+    image_url: `http://localhost:8080/images/${req.file.filename}`,
+  });
+});
+app.use("/images", express.static("upload/images"));
 
 // MiddleWare to fetch user from database
 const fetchuser = async (req, res, next) => {
@@ -56,7 +58,6 @@ const fetchuser = async (req, res, next) => {
     res.status(401).send({ errors: "Please authenticate using a valid token" });
   }
 };
-
 
 // Schema for creating user model
 const Users = mongoose.model("Users", {
@@ -124,110 +125,113 @@ app.get("/", (req, res) => {
 });
 
 //Create an endpoint at ip/login for login the user and giving auth-token
-app.post('/login', async (req, res) => {
+app.post("/login", async (req, res) => {
   console.log("Login");
-    let success = false;
-    let user = await Users.findOne({ email: req.body.email });
-    if (user) {
-        const passCompare = req.body.password === user.password;
-        if (passCompare) {
-            const data = {
-                user: {
-                    id: user.id
-                }
-            }
-			success = true;
+  let success = false;
+  let user = await Users.findOne({ email: req.body.email });
+  if (user) {
+    const passCompare = req.body.password === user.password;
+    if (passCompare) {
+      const data = {
+        user: {
+          id: user.id,
+        },
+      };
+      success = true;
       console.log(user.id);
-			const token = jwt.sign(data, 'secret_ecom');
-			res.json({ success, token });
-        }
-        else {
-            return res.status(400).json({success: success, errors: "please try with correct email/password"})
-        }
+      const token = jwt.sign(data, "secret_ecom");
+      res.json({ success, token });
+    } else {
+      return res.status(400).json({
+        success: success,
+        errors: "please try with correct email/password",
+      });
     }
-    else {
-        return res.status(400).json({success: success, errors: "please try with correct email/password"})
-    }
-})
-
-//Create an endpoint at ip/auth for regestring the user in data base & sending token
-app.post('/signup', async (req, res) => {
-  console.log("Sign Up");
-        let success = false;
-        let check = await Users.findOne({ email: req.body.email });
-        if (check) {
-            return res.status(400).json({ success: success, errors: "existing user found with this email" });
-        }
-        let cart = {};
-          for (let i = 0; i < 300; i++) {
-          cart[i] = 0;
-        }
-        const user = new Users({
-            name: req.body.username,
-            email: req.body.email,
-            password: req.body.password,
-            cartData: cart,
-        });
-        await user.save();
-        const data = {
-            user: {
-                id: user.id
-            }
-        }
-        
-        const token = jwt.sign(data, 'secret_ecom');
-        success = true; 
-        res.json({ success, token })
-    })
-
-app.get("/allproducts", async (req, res) => {
-	let products = await Product.find({});
-  console.log("All Products");
-    res.send(products);
+  } else {
+    return res.status(400).json({
+      success: success,
+      errors: "please try with correct email/password",
+    });
+  }
 });
 
+//Create an endpoint at ip/auth for regestring the user in data base & sending token
+app.post("/signup", async (req, res) => {
+  console.log("Sign Up");
+  let success = false;
+  let check = await Users.findOne({ email: req.body.email });
+  if (check) {
+    return res.status(400).json({
+      success: success,
+      errors: "existing user found with this email",
+    });
+  }
+  let cart = {};
+  for (let i = 0; i < 300; i++) {
+    cart[i] = 0;
+  }
+  const user = new Users({
+    name: req.body.username,
+    email: req.body.email,
+    password: req.body.password,
+    cartData: cart,
+  });
+  await user.save();
+  const data = {
+    user: {
+      id: user.id,
+    },
+  };
 
+  const token = jwt.sign(data, "secret_ecom");
+  success = true;
+  res.json({ success, token });
+});
+
+app.get("/allproducts", async (req, res) => {
+  let products = await Product.find({});
+  console.log("All Products");
+  res.send(products);
+});
 
 //Create an endpoint for saving the product in cart
 
+//Create an endpoint for saving the product in cart
 
-  //Create an endpoint for saving the product in cart
+//Create an endpoint for saving the product in cart
 
-  //Create an endpoint for saving the product in cart
+app.post("/addproduct", async (req, res) => {
+  try {
+    const products = await Product.find({});
+    const id = products.length > 0 ? products[products.length - 1].id + 1 : 1;
 
+    const product = new Product({
+      id: id,
+      name: req.body.name,
+      image: req.body.image,
+      category: req.body.category,
+      liters: req.body.liters,
+      neck: req.body.neck,
+      kg_pack: req.body.kg_pack,
+    });
 
+    await product.save();
 
-  app.post("/addproduct", async (req, res) => {
-    try {
-      const products = await Product.find({});
-      const id = products.length > 0 ? products[products.length - 1].id + 1 : 1;
-      
-      const product = new Product({
-        id: id,
-        name: req.body.name,
-        image: req.body.image,
-        category: req.body.category,
-        liters: req.body.liters,
-        neck: req.body.neck,
-        kg_pack: req.body.kg_pack,
-      });
-      
-      await product.save();
-      
-      console.log("Saved");
-      res.json({ success: true, name: req.body.name });
-    } catch (error) {
-      console.error("Error:", error);
-      res.status(500).json({ success: false, error: "Failed to save product" });
-    }
-  });
+    console.log("Saved");
+    res.json({ success: true, name: req.body.name });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ success: false, error: "Failed to save product" });
+  }
+});
 app.post("/removeproduct", async (req, res) => {
   const product = await Product.findOneAndDelete({ id: req.body.id });
   console.log("Removed");
-  res.json({success:true,name:req.body.name})
+  res.json({ success: true, name: req.body.name });
 });
 
-app.listen(port, (error) => {
-  if (!error) console.log("Server Running on port " + port);
+const PORT = process.env.PORT;
+app.listen(PORT, (error) => {
+  if (!error) console.log("Server Running on port " + PORT);
   else console.log("Error : ", error);
 });
