@@ -4,116 +4,107 @@ import logo from "../Assets/logo.png";
 import brand_logo from "../Assets/brand_logo.png";
 
 const Navbar = () => {
-  const [menu, setMenu] = useState("home");
+  const [menu, setMenu] = useState(false);
   const menuRef = useRef();
 
+  const toggleMenu = () => {
+    setMenu(!menu);
+  };
+
   return (
-    <div className="nav flex justify-between items-center shadow-md px-8 py-4">
-      <Link
-        to="/"
-        onClick={() => {
-          setMenu("home");
-        }}
-        className="flex items-center px-4"
-      >
-        <img src={logo} alt="logo" className="w-12 h-auto" />
-        <img src={brand_logo} alt="logo" className="w-24 h-auto ml-4" />
-      </Link>
-      <ul ref={menuRef} className="md:flex md:items-center md:space-x-4 hidden">
-        <li
-          onClick={() => {
-            setMenu("home");
-          }}
-          className={`cursor-pointer px-4 ${
-            menu === "home" ? "border-b-2 border-red-500 pb-1" : ""
-          }`}
-        >
-          <Link to="/" className="hover:text-gray-700">
-            HOME
+    <nav className="bg-white">
+      <div className="container mx-auto px-4 py-3 md:flex md:justify-between md:items-center">
+        <div className="flex items-center justify-between">
+          <Link to="/" className="flex items-center">
+            <img src={logo} alt="Logo" className="w-10 h-auto" />
+            <img
+              src={brand_logo}
+              alt="Brand Logo"
+              className="w-24 h-auto ml-4"
+            />
           </Link>
-        </li>
-        <li
-          onClick={() => {
-            setMenu("preform");
-          }}
-          className={`cursor-pointer px-4 ${
-            menu === "preform" ? "border-b-2 border-red-500 pb-1" : ""
-          }`}
-        >
-          <Link to="/preform" className="hover:text-gray-700">
-            PREFORM
-          </Link>
-        </li>
-        <li
-          onClick={() => {
-            setMenu("caps");
-          }}
-          className={`cursor-pointer px-4 ${
-            menu === "caps" ? "border-b-2 border-red-500 pb-1" : ""
-          }`}
-        >
-          <Link to="/caps" className="hover:text-gray-700">
-            CAPS
-          </Link>
-        </li>
-        {/* <li
-          onClick={() => {
-            setMenu("machinery");
-          }}
-          className={`cursor-pointer px-4 ${
-            menu === "machinery" ? "border-b-2 border-red-500 pb-1" : ""
-          }`}
-        >
-          <Link to="/machinery" className="hover:text-gray-700">
-            MACHINERY
-          </Link>
-        </li> */}
-        <li
-          onClick={() => {
-            setMenu("about");
-          }}
-          className={`cursor-pointer px-4 ${
-            menu === "about" ? "border-b-2 border-red-500 pb-1" : ""
-          }`}
-        >
-          <Link to="/about" className="hover:text-gray-700">
-            ABOUT US
-          </Link>
-        </li>
-        <li
-          onClick={() => {
-            setMenu("contact");
-          }}
-          className={`cursor-pointer px-4 ${
-            menu === "contact" ? "border-b-2 border-red-500 pb-1" : ""
-          }`}
-        >
-          <Link to="/contact" className="hover:text-gray-700">
-            CONTACT US
-          </Link>
-        </li>
-      </ul>
-      <div className="flex items-center space-x-4">
-        {localStorage.getItem("auth-token") ? (
           <button
-            onClick={() => {
-              localStorage.removeItem("auth-token");
-              window.location.replace("/");
-            }}
-            className="px-4 py-2 border border-gray-700 rounded-md text-gray-700 font-semibold focus:outline-none hover:bg-gray-200"
+            onClick={toggleMenu}
+            className="md:hidden text-gray-900 focus:outline-none focus:text-gray-900"
           >
-            Logout
+            <svg
+              className="w-6 h-6"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              {menu ? (
+                <path d="M6 18L18 6M6 6l12 12"></path>
+              ) : (
+                <path d="M4 6h16M4 12h16m-7 6h7"></path>
+              )}
+            </svg>
           </button>
-        ) : (
-          <Link
-            to="/login"
-            className="px-4 py-2 border border-gray-700 rounded-md text-gray-700 font-semibold focus:outline-none hover:bg-gray-200"
-          >
-            Login
-          </Link>
-        )}
+        </div>
+        <div
+          ref={menuRef}
+          className={`${
+            menu ? "block" : "hidden"
+          } md:flex md:items-center md:w-auto`}
+        >
+          <div className="text-sm md:flex-grow flex justify-evenly">
+            <Link
+              to="/"
+              className="block mt-4 md:inline-block md:mt-0 text-gray-900 hover:text-gray-700 mr-4"
+            >
+              HOME
+            </Link>
+            <Link
+              to="/preform"
+              className="block mt-4 md:inline-block md:mt-0 text-gray-900 hover:text-gray-700 mr-4"
+            >
+              PREFORM
+            </Link>
+            <Link
+              to="/caps"
+              className="block mt-4 md:inline-block md:mt-0 text-gray-900 hover:text-gray-700 mr-4"
+            >
+              CAPS
+            </Link>
+            <Link
+              to="/about"
+              className="block mt-4 md:inline-block md:mt-0 text-gray-900 hover:text-gray-700 mr-4"
+            >
+              ABOUT US
+            </Link>
+            <Link
+              to="/contact"
+              className="block mt-4 md:inline-block md:mt-0 text-gray-900 hover:text-gray-700 mr-4"
+            >
+              CONTACT US
+            </Link>
+          </div>
+          <div className="flex items-center mt-4 md:mt-0">
+            {localStorage.getItem("auth-token") ? (
+              <button
+                onClick={() => {
+                  localStorage.removeItem("auth-token");
+                  window.location.replace("/");
+                }}
+                className="block px-4 py-2 border border-gray-700 rounded-md text-gray-700 font-semibold focus:outline-none hover:bg-gray-200"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link
+                to="/login"
+                className="block px-4 py-2 border border-gray-700 rounded-md text-gray-700 font-semibold focus:outline-none hover:bg-gray-200"
+              >
+                Login
+              </Link>
+            )}
+          </div>
+        </div>
       </div>
-    </div>
+    </nav>
   );
 };
 

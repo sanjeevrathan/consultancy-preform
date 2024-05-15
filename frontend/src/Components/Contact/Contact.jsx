@@ -1,65 +1,5 @@
-// import { useEffect, useState } from "react";
-// import { Link } from "react-router-dom";
-// // import Product from "../../Pages/Product";
-
-// const Contact = ({ product }) => {
-//   const [message, setMessage] = useState("");
-//   const [products, setProducts] = useState([]);
-
-//   useEffect(() => {
-//     const fetchProducts = async () => {
-//       try {
-//         const response = await fetch(`http://localhost:4000/allproducts`);
-//         const data = await response.json();
-
-//         setProducts(data);
-//       } catch (error) {
-//         console.error("Error fetching products:", error);
-//       }
-//     };
-//     fetchProducts();
-//   }, []);
-
-//   const onChange = (e) => {
-//     setMessage(e.target.value);
-//   };
-
-//   return (
-//     <>
-//       <div>
-//         <div className="flex flex-col gap-2">
-//           <p>
-//             Contact{" "}
-//             <span className="font-semibold">Lishanth PET Industries</span>
-//             {/* <span className="font-semibold">{products.name}</span> */}
-//           </p>
-//           <textarea
-//             name="message"
-//             id="message"
-//             rows="2"
-//             value={message}
-//             onChange={onChange}
-//             placeholder="Enter your message here..."
-//             className="w-full border p-3 rounded-lg"
-//           ></textarea>
-
-//           <Link
-//             to={`mailto:${"sanjeevrathan4444@gmail.com"}?subject=Regarding ${
-//               product.name
-//             } &body=${message}`}
-//             className="bg-slate-700 text-white text-center p-3 uppercase rounded-lg hover:opacity-95"
-//           >
-//             Send Message
-//           </Link>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default Contact;
-
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -156,12 +96,14 @@ const Contact = () => {
             required
           ></textarea>
         </div>
-        <button
-          type="submit"
-          className="bg-blue-500 text-white font-semibold px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
+        <Link
+          to={`mailto:${"sanjeevrathan4444@gmail.com"}?subject=name:${
+            formData.name
+          } Phone:${formData.phoneNumber} &body=${formData.description}`}
+          className="bg-slate-700 text-white text-center p-3 uppercase rounded-lg hover:opacity-95"
         >
           Submit
-        </button>
+        </Link>
       </form>
     </div>
   );

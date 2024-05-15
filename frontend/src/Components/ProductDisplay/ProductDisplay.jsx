@@ -1,12 +1,7 @@
-import React, { useContext } from "react";
-import Preform from "../Preform/Preform.jsx";
-import { ShopContext } from "../../Context/ShopContext";
-import Contact from "../Contact/Contact.jsx";
 import { Link } from "react-router-dom";
 
 const ProductDisplay = (props) => {
   const { product } = props;
-  const { addToCart } = useContext(ShopContext);
 
   return (
     <div className="productdisplay flex justify-between px-10">
