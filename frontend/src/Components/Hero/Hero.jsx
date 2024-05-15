@@ -6,7 +6,7 @@ const Hero = () => {
   const [popular, setPopular] = useState([]);
 
   const fetchInfo = () => {
-    fetch("http://localhost:8080/allproducts")
+    fetch(`https://consutancy-backend.onrender.com/allproducts`)
       .then((res) => res.json())
       .then((data) => setPopular(data));
   };
